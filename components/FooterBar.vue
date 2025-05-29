@@ -13,6 +13,6 @@
   background-color: #003366;
   color: white;
   text-align: center;
-  padding: 1rem;
+  margin-right: 50px;
 }
 </style>
