@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   
   devtools: { enabled: true },
   
-  modules: ['@nuxtjs/google-fonts'],
+  modules: ['@nuxtjs/google-fonts','@nuxt/icon'],
   
   css: ['@/assets/css/main.css'],
   
