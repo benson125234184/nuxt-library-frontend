@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <p>© 2025 國家圖書館. All rights reserved.</p>
+    <p>© 2025 圖書館 All rights reserved.</p>
   </footer>
 </template>
 
@@ -10,9 +10,16 @@
 
 <style scoped>
 .footer {
+  width: 100%;
+  /* 填滿寬度 */
+  height: 100%;
+  /* 填滿父容器高度 */
   background-color: #003366;
   color: white;
   text-align: center;
-  margin-right: 50px;
+  display: flex;
+  /* 加強文字置中 */
+  align-items: center;
+  justify-content: center;
 }
 </style>

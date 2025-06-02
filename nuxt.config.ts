@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   
   googleFonts: {
     families: {
-      'Hachi Maru Pop': true, // ✅ 這裡指定你要的 Google Font
+      'Hachi Maru Pop': true, // 這裡指定你要的 Google Font
     },
     display: 'swap'
   }, 

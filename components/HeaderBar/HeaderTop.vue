@@ -1,7 +1,8 @@
 <template>
   <div class="top-bar">
     <slot name="logo">
-      <div class="book"><img src="/public/images/book-flip.gif"></div>
+      <!-- 本動畫來源：https://www.aigei.com/s?type=gif_moving_graph&q=看書 -->
+      <div class="cat"><img src="/public/images/book-reading.gif"></div>
       <!-- 預設 logo -->
       <div class="logo">
         <img src="/images/library-logo.png" alt="Logo" />
@@ -18,12 +19,12 @@
           <a :href="link.href">{{ link.label }}</a>
         </li>
       </ul>
-      <div class="icons">
+      <!-- <div class="icons">
         <img src="/yt.png" alt="YouTube" />
         <img src="/line.png" alt="Line" />
         <img src="/ig.png" alt="Instagram" />
         <img src="/fb.png" alt="Facebook" />
-      </div>
+      </div> -->
       <div class="search">
         <input type="text" placeholder="站內搜尋" />
         <span>🔍</span>
@@ -65,20 +66,13 @@ let links = [
   align-items: center;
 }
 
-.book {
+.cat {
   position: absolute;
   /* 讓它脫離正常排版，可以自由定位 */
-  top: 0;
-  left: 0;
-  transform: rotate(-45deg);
-  /* 向左旋轉 45 度 */
-  /* z-index: -1; */
-  /* 避免遮住其他內容，可視情況調整 */
-  /* opacity: 0.1; */
-  /* 若你要當浮水印風格，可加這行淡化 */
+  padding: 10px 0;
 }
 
-.book img {
+.cat img {
   width: 100px;
   /* 可以依需要調整大小 */
   height: auto;
