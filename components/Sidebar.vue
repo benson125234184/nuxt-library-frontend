@@ -33,7 +33,6 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import BookSearch from '@/components/BookSearch.vue'
 
 defineProps({ isOpen: Boolean })
 defineEmits(['update:isOpen'])
@@ -69,7 +68,7 @@ const menuItems = [
     {
         label: '館藏查詢',
         children: [
-            { label: '館藏查詢', href: '/Book-search' }
+            { label: '館藏查詢', href: '/catalogue-search' }
         ]
     },
     {
@@ -100,8 +99,8 @@ const menuItems = [
     {
         label: '排行榜 & 評論',
         children: [
-            { label: '借閱排行榜', href: '#' },
-            { label: '書籍評論', href: '#' }
+            { label: '借閱排行榜', href: '/borrowing-rankings' },
+            { label: '讀者書評', href: '/book-review' }
         ]
     }
 ]
