@@ -168,15 +168,21 @@ function handleReserve() {
   // 模擬預約成功
   userReservedCount.value++
   alert(`成功預約《${book.value?.title}》`)
-  router.push('/history')
+  router.push({
+    path: '/reservation',
+    query: {
+      bookId: book.value?.id,
+      title: book.value?.title,
+      author: book.value?.author
+    }
+  })
 }
 </script>
 
 <style>
 .reservation-bg {
-  min-height: 100vh;
   background: #fff;
-  padding: 32px 0;
+  padding: 32px 0 100px 0;
 }
 .reservation-container {
   max-width: 700px;
@@ -229,7 +235,6 @@ function handleReserve() {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px #0001;
-  overflow: hidden;
   border: 1px solid #e5e7eb;
 }
 .reservation-bookinfo {

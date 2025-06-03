@@ -225,7 +225,7 @@ const router = useRouter()
 function viewBookDetail(book) {
   // 跳轉到書本詳情頁面
   router.push({
-    path: `/book/${book.id}`,
+    path: `/${book.id}`,
     query: {
       title: book.title,
       author: book.author,
@@ -245,9 +245,8 @@ function goToPage(page) {
 
 <style scoped>
 .history-bg {
-  padding: 24px;
+  padding: 24px 24px 100px 24px;
   background: #fff;
-  min-height: 100vh;
 }
 .history-title {
   font-size: 2rem;
@@ -337,14 +336,14 @@ function goToPage(page) {
   width: 100%;
 }
 .history-table-fill {
-  min-height: 60vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 .history-table-scrollable {
-  max-height: 60vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .history-grid-table {
   display: flex;
@@ -353,7 +352,6 @@ function goToPage(page) {
   background: #fff;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  overflow: hidden;
 }
 .history-grid-header,
 .history-grid-row {
@@ -378,7 +376,6 @@ function goToPage(page) {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 60vh; /* 讓內容區塊有高度 */
 }
 .history-grid-row {
   min-height: 0;
@@ -411,8 +408,6 @@ function goToPage(page) {
 .history-grid-card {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px #0001;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -453,6 +448,19 @@ function goToPage(page) {
   font-size: 0.9rem;
   color: #4b5563;
   margin-bottom: 8px;
+}
+.history-detail-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.history-detail-btn:hover {
+  background: #1d4ed8;
 }
 .history-pagination {
   display: flex;
