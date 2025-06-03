@@ -1,107 +1,97 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">預約紀錄</h1>
-    <div class="space-y-4">
+  <div class="history-bg">
+    <h1 class="history-title">預約查詢</h1>
+    <div class="history-main">
       <!-- 控制面板 -->
-      <div class="control-panel">
-        <div class="control-panel-left">
-          <div class="flex items-center gap-2">
-            <span class="text-sm">每頁顯示：</span>
-            <select v-model="itemsPerPage" class="w-[120px] border rounded px-2 py-1">
+      <div class="history-control-panel">
+        <div class="history-control-panel-left">
+          <div class="history-row">
+            <span class="history-label">每頁顯示：</span>
+            <select v-model="itemsPerPage" class="history-select">
               <option v-for="size in pageSizes" :key="size" :value="size">{{ size }} 筆</option>
             </select>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm">排序：</span>
-            <select v-model="sortConfig.field" class="w-[120px] border rounded px-2 py-1">
+          <div class="history-row">
+            <span class="history-label">排序：</span>
+            <select v-model="sortConfig.field" class="history-select">
               <option value="title">書名</option>
               <option value="author">作者</option>
               <option value="borrowDate">借閱日</option>
               <option value="dueDate">到期日</option>
             </select>
-            <button @click="toggleSortOrder" class="border rounded px-2 py-1">
+            <button @click="toggleSortOrder" class="history-sort-btn">
               <span v-if="sortConfig.ascending">↑ 升冪</span>
               <span v-else>↓ 降冪</span>
             </button>
           </div>
         </div>
-        <div class="control-panel-right">
+        <div class="history-control-panel-right">
           <button
             @click="viewMode = 'table'"
-            :class="[
-              'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2',
-              viewMode === 'table' ? 'bg-primary text-primary-foreground' : ''
-            ]"
+            :class="['history-view-btn', viewMode === 'table' ? 'history-view-btn-active' : '']"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-icon h-4 w-4 mr-2"><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M3 6h.01"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M8 6h13"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="history-view-icon"><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M3 6h.01"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M8 6h13"></path></svg>
             表格
           </button>
           <button
             @click="viewMode = 'grid'"
-            :class="[
-              'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2',
-              viewMode === 'grid' ? 'bg-primary text-primary-foreground' : ''
-            ]"
+            :class="['history-view-btn', viewMode === 'grid' ? 'history-view-btn-active' : '']"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid h-4 w-4 mr-2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="history-view-icon"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
             網格
           </button>
         </div>
       </div>
 
       <!-- 表格視圖 -->
-      <div
-        :class="['table-scroll-wrapper', itemsPerPage > 10 ? 'scrollable' : 'fill-screen']"
-      >
-        <table v-if="viewMode === 'table'" class="w-full border-separate border-spacing-0 rounded-lg overflow-hidden bg-gray-800 text-gray-100">
-          <thead class="bg-gray-700 text-gray-200">
-            <tr>
-              <th class="cursor-pointer px-4 py-3 text-left font-semibold" @click="updateSort('title')">書名 {{ getSortIcon('title') }}</th>
-              <th class="cursor-pointer px-4 py-3 text-left font-semibold" @click="updateSort('author')">作者 {{ getSortIcon('author') }}</th>
-              <th class="cursor-pointer px-4 py-3 text-left font-semibold" @click="updateSort('borrowDate')">借閱日 {{ getSortIcon('borrowDate') }}</th>
-              <th class="cursor-pointer px-4 py-3 text-left font-semibold" @click="updateSort('dueDate')">到期日 {{ getSortIcon('dueDate') }}</th>
-              <th class="px-4 py-3 text-left font-semibold">書本資訊</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(book, index) in paginatedBooks" :key="index" class="border-b border-gray-700 hover:bg-gray-700/60 transition">
-              <td class="px-4 py-3 align-middle">{{ book.title }}</td>
-              <td class="px-4 py-3 align-middle">{{ book.author }}</td>
-              <td class="px-4 py-3 align-middle">{{ book.borrowDate }}</td>
-              <td class="px-4 py-3 align-middle">{{ book.dueDate }}</td>
-              <td class="px-4 py-3 align-middle">
-                <button @click="viewBookDetail(book)" class="rounded-md px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white font-medium shadow-sm transition">詳情</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <div v-for="(book, index) in paginatedBooks" 
-               :key="index"
-               class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <div class="aspect-[3/4] relative bg-gray-100">
-              <img :src="book.coverUrl || getDefaultCoverUrl(index)" 
-                   :alt="book.title"
-                   class="object-cover w-full h-full" />
+      <div :class="['history-table-scroll', itemsPerPage > 10 ? 'history-table-scrollable' : 'history-table-fill']">
+        <div v-if="viewMode === 'table'" class="history-grid-table">
+          <div class="history-grid-header">
+            <div>書名</div>
+            <div>作者</div>
+            <div>借閱日</div>
+            <div>到期日</div>
+            <div>書本資訊</div>
+          </div>
+          <div class="history-grid-body">
+            <div
+              v-for="(book, index) in paginatedBooks"
+              :key="index"
+              class="history-grid-row"
+            >
+              <div>{{ book.title }}</div>
+              <div>{{ book.author }}</div>
+              <div>{{ book.borrowDate }}</div>
+              <div>{{ book.dueDate }}</div>
+              <div>
+                <button @click="viewBookDetail(book)" class="history-detail-btn">詳情</button>
+              </div>
             </div>
-            <div class="p-4 space-y-2">
-              <h3 class="font-semibold truncate">{{ book.title }}</h3>
-              <p class="text-sm text-gray-600 truncate">{{ book.author }}</p>
-              <div class="text-xs text-gray-500">
+          </div>
+        </div>
+        <div v-else class="history-grid">
+          <div v-for="(book, index) in paginatedBooks" :key="index" class="history-grid-card">
+            <div class="history-grid-img-wrap">
+              <img :src="book.coverUrl || getDefaultCoverUrl(index)" :alt="book.title" class="history-grid-img" />
+            </div>
+            <div class="history-grid-info">
+              <h3 class="history-grid-title">{{ book.title }}</h3>
+              <p class="history-grid-author">{{ book.author }}</p>
+              <div class="history-grid-dates">
                 <p>借閱日：{{ book.borrowDate }}</p>
                 <p>到期日：{{ book.dueDate }}</p>
               </div>
-              <button class="w-full border rounded px-2 py-1 bg-blue-600 text-white" @click="viewBookDetail(book)">詳情</button>
+              <button class="history-detail-btn" @click="viewBookDetail(book)">詳情</button>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 分頁控制 -->
-      <div class="pagination-center mt-4">
-        <div class="pagination-controls">
+      <div class="history-pagination">
+        <div class="history-pagination-controls">
           <button 
-            class="h-8 w-8 p-0 border rounded flex items-center justify-center"
+            class="history-pagination-btn"
             :disabled="currentPage === 1"
             @click="currentPage--"
           >
@@ -112,14 +102,14 @@
           <input
             type="number"
             :value="currentPage"
-            class="h-8 w-12 text-center border rounded"
+            class="history-pagination-input"
             min="1"
             :max="totalPages"
             @change="e => goToPage(parseInt(e.target.value))"
           />
           <span>/{{ totalPages }}頁</span>
           <button 
-            class="h-8 w-8 p-0 border rounded flex items-center justify-center"
+            class="history-pagination-btn"
             :disabled="currentPage >= totalPages"
             @click="currentPage++"
           >
@@ -127,7 +117,7 @@
             <span style="display:inline-block;width:1em;">&#8594;</span>
           </button>
         </div>
-        <div class="text-sm text-gray-500 text-center">
+        <div class="history-pagination-info">
           顯示第 {{ (currentPage - 1) * itemsPerPage + 1 }} 到 {{ Math.min(currentPage * itemsPerPage, sortedBooks.length) }} 筆，共 {{ sortedBooks.length }} 筆
         </div>
       </div>
@@ -254,127 +244,262 @@ function goToPage(page) {
 </script>
 
 <style scoped>
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+.history-bg {
+  padding: 24px;
+  background: #fff;
+  min-height: 100vh;
 }
-
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+.history-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #18181b;
 }
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-}
-
-/* 隱藏數字輸入框的上下箭頭 */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-/* 表格美化 */
-table {
-  width: 100%;
-  table-layout: fixed;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-th, td {
-  border: none;
-  min-width: 100px;
-  padding: 0.75rem 1rem;
-  word-break: break-all;
-  text-align: center;
-}
-th:first-child, td:first-child {
-  text-align: left;
-}
-th {
-  background: #374151;
-  color: #e5e7eb;
-  font-weight: 600;
-  text-align: center;
-}
-tbody tr {
-  transition: background 0.2s;
-}
-tbody tr:hover {
-  background: #374151cc;
-}
-button {
-  outline: none;
-}
-
-
-/* 分頁控制置中 */
-.pagination-center {
+.history-main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: 24px;
 }
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.control-panel {
+.history-control-panel {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  gap: 1rem;
+  margin-bottom: 16px;
+  gap: 16px;
 }
-.control-panel-left {
+.history-control-panel-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 32px;
 }
-.control-panel-right {
+.history-control-panel-right {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
-
-.table-scroll-wrapper {
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.history-label {
+  font-size: 1rem;
+  color: #222;
+}
+.history-select {
+  width: 120px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  background: #fff;
+  color: #18181b;
+}
+.history-sort-btn {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: #fff;
+  color: #18181b;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.history-sort-btn:hover {
+  background: #f3f4f6;
+}
+.history-view-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #18181b;
+  font-size: 1rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-right: 4px;
+}
+.history-view-btn:last-child {
+  margin-right: 0;
+}
+.history-view-btn-active {
+  background: #2563eb;
+  color: #fff;
+}
+.history-view-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+.history-table-scroll {
   width: 100%;
 }
-
-.table-scroll-wrapper.fill-screen {
-  min-height: 30vh; /* 讓表格至少有 60vh 高，但不會強制填滿 */
+.history-table-fill {
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
-
-.table-scroll-wrapper.scrollable {
-  max-height: 60vh; /* 跟 fill-screen 一樣高 */
+.history-table-scrollable {
+  max-height: 60vh;
   overflow-y: auto;
 }
-
-select option {
+.history-grid-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+.history-grid-header,
+.history-grid-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
+  align-items: center;
+}
+.history-grid-header {
+  background: #f3f4f6;
+  color: #222;
+  font-weight: 600;
+  padding: 12px 0;
+}
+.history-grid-header > div {
+  padding: 12px 16px;
+  text-align: center;
+}
+.history-grid-header > div:first-child {
+  text-align: left;
+}
+.history-grid-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 60vh; /* 讓內容區塊有高度 */
+}
+.history-grid-row {
+  min-height: 0;
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s;
+}
+.history-grid-row:last-child {
+  border-bottom: none;
+}
+.history-grid-row > div {
+  padding: 12px 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.history-grid-row > div:first-child {
+  text-align: left;
+  justify-content: flex-start;
+}
+.history-grid-row:hover {
+  background: #f3f4f6;
+}
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.history-grid-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+.history-grid-card:hover {
+  box-shadow: 0 4px 16px #0002;
+  background: #f3f4f6;
+}
+.history-grid-img-wrap {
+  aspect-ratio: 3/4;
+  background: #f3f4f6;
+  position: relative;
+}
+.history-grid-img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.history-grid-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.history-grid-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #18181b;
+  margin-bottom: 2px;
+}
+.history-grid-author {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+.history-grid-dates {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+.history-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.history-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.history-pagination-btn {
+  height: 32px;
+  width: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.history-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.history-pagination-btn:hover {
+  background: #f3f4f6;
+}
+.history-pagination-input {
+  height: 32px;
+  width: 48px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #18181b;
+  background: #fff;
+}
+.history-pagination-info {
+  font-size: 0.95rem;
+  color: #4b5563;
   text-align: center;
 }
 </style>
