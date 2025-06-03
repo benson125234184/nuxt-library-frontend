@@ -54,7 +54,7 @@ const isSidebarOpen = ref(true)
    flex: 1;
    display: flex;
    flex-direction: column;
-   margin-left: 50px;
+   margin-left: 200px;
    transition: margin-left 0.3s ease;
 }
 
