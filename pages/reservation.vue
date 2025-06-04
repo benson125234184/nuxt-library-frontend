@@ -1,37 +1,37 @@
 <template>
-  <div class="min-h-screen bg-black py-8">
-    <div class="max-w-3xl mx-auto px-4">
+  <div class="reservation-bg">
+    <div class="reservation-container">
       <!-- 頁面標題區 -->
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-100">書籍預約</h1>
-        <p class="mt-2 text-gray-400">請填寫以下預約信息</p>
+      <div class="reservation-title-area">
+        <h1 class="reservation-title">書籍預約</h1>
+        <p class="reservation-subtitle">請填寫以下預約信息</p>
       </div>
 
-      <div v-if="!book" class="bg-gray-800 rounded-lg shadow-xl p-6 text-center border border-gray-700">
-        <div class="p-6">
-          <div class="mx-auto w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-if="!book" class="reservation-notfound">
+        <div class="reservation-notfound-inner">
+          <div class="reservation-notfound-icon">
+            <svg class="reservation-notfound-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p class="text-gray-400">找不到該書籍資訊，請從書籍頁面重新進入。</p>
+          <p class="reservation-notfound-text">找不到該書籍資訊，請從書籍頁面重新進入。</p>
         </div>
       </div>
 
-      <div v-else class="bg-gray-800 rounded-lg shadow-xl overflow-hidden border border-gray-700">
+      <div v-else class="reservation-card">
         <!-- 書籍信息區 -->
-        <div class="bg-gradient-to-r from-gray-800 to-gray-900 p-6 border-b border-gray-700">
-          <h2 class="text-xl font-semibold mb-2 text-gray-300">預約書籍</h2>
-          <p class="text-2xl font-bold mb-1 text-white">{{ book.title }}</p>
-          <p class="text-sm text-gray-400">作者：{{ book.author }}</p>
+        <div class="reservation-bookinfo">
+          <h2 class="reservation-bookinfo-title">預約書籍</h2>
+          <p class="reservation-bookinfo-book">{{ book.title }}</p>
+          <p class="reservation-bookinfo-author">作者：{{ book.author }}</p>
         </div>
 
         <!-- 預約表單區 -->
-        <div class="p-6 space-y-6">
+        <div class="reservation-form">
           <!-- 取書時間 -->
-          <div class="space-y-2">
-            <label class="flex items-center text-sm font-medium text-gray-300">
-              <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="reservation-form-group">
+            <label class="reservation-label">
+              <svg class="reservation-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               取書時間
@@ -39,14 +39,14 @@
             <input 
               type="datetime-local" 
               v-model="form.time" 
-              class="w-full bg-white border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 placeholder-gray-500" 
+              class="reservation-input" 
             />
           </div>
 
           <!-- 取書地點 -->
-          <div class="space-y-2">
-            <label class="flex items-center text-sm font-medium text-gray-300">
-              <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="reservation-form-group">
+            <label class="reservation-label">
+              <svg class="reservation-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -54,7 +54,7 @@
             </label>
             <select 
               v-model="form.location" 
-              class="w-full bg-white border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 [&>option]:text-gray-900 [&>option]:bg-white"
+              class="reservation-input"
             >
               <option disabled value="">請選擇取書地點</option>
               <option>一樓服務台</option>
@@ -63,16 +63,16 @@
           </div>
 
           <!-- 取書方式 -->
-          <div class="space-y-2">
-            <label class="flex items-center text-sm font-medium text-gray-300">
-              <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="reservation-form-group">
+            <label class="reservation-label">
+              <svg class="reservation-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               取書方式
             </label>
             <select 
               v-model="form.method" 
-              class="w-full bg-white border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 [&>option]:text-gray-900 [&>option]:bg-white"
+              class="reservation-input"
             >
               <option disabled value="">請選擇取書方式</option>
               <option>親自取書</option>
@@ -81,9 +81,9 @@
           </div>
 
           <!-- 預約須知 -->
-          <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
-            <h3 class="text-sm font-medium text-gray-200 mb-2">預約須知</h3>
-            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+          <div class="reservation-notice">
+            <h3 class="reservation-notice-title">預約須知</h3>
+            <ul class="reservation-notice-list">
               <li>請在預約時間內完成取書</li>
               <li>超過預約時間未取書將自動取消預約</li>
               <li>每人最多可預約 {{ maxReservation }} 本書</li>
@@ -92,18 +92,18 @@
           </div>
 
           <!-- 按鈕區域 -->
-          <div class="flex justify-end space-x-4 pt-4 border-t border-gray-700">
+          <div class="reservation-btn-area">
             <button 
               type="button"
               @click="router.back()"
-              class="border border-gray-600 text-gray-300 hover:bg-gray-700 rounded px-4 py-2"
+              class="reservation-btn reservation-btn-back"
             >
               返回
             </button>
             <button 
               type="button"
               @click="handleReserve"
-              class="bg-gradient-to-r from-gray-700 to-gray-800 text-white hover:from-gray-600 hover:to-gray-700 border border-gray-600 rounded px-4 py-2"
+              class="reservation-btn reservation-btn-confirm"
             >
               確認預約
             </button>
@@ -168,46 +168,186 @@ function handleReserve() {
   // 模擬預約成功
   userReservedCount.value++
   alert(`成功預約《${book.value?.title}》`)
-  router.push('/history')
+  router.push({
+    path: '/reservation',
+    query: {
+      bookId: book.value?.id,
+      title: book.value?.title,
+      author: book.value?.author
+    }
+  })
 }
 </script>
 
 <style>
-/* 添加漸變背景動畫 */
-.bg-gradient-to-r {
-  background-size: 200% 200%;
-  animation: gradient 15s ease infinite;
+.reservation-bg {
+  background: #fff;
+  padding: 32px 0 100px 0;
 }
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.reservation-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
-
-/* 自定義滾動條 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.reservation-title-area {
+  text-align: center;
+  margin-bottom: 32px;
 }
-
-::-webkit-scrollbar-track {
-  background-color: rgb(31, 41, 55); /* bg-gray-800 */
+.reservation-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #18181b;
 }
-
-::-webkit-scrollbar-thumb {
-  background-color: rgb(75, 85, 99); /* bg-gray-600 */
-  border-radius: 9999px;
+.reservation-subtitle {
+  margin-top: 8px;
+  color: #4b5563;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(107, 114, 128); /* bg-gray-500 */
+.reservation-notfound {
+  background: #f3f4f6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+.reservation-notfound-inner {
+  padding: 24px;
+}
+.reservation-notfound-icon {
+  width: 64px;
+  height: 64px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+.reservation-notfound-svg {
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+}
+.reservation-notfound-text {
+  color: #6b7280;
+}
+.reservation-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  border: 1px solid #e5e7eb;
+}
+.reservation-bookinfo {
+  background: #f3f4f6;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.reservation-bookinfo-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 8px;
+}
+.reservation-bookinfo-book {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #18181b;
+  margin-bottom: 4px;
+}
+.reservation-bookinfo-author {
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+.reservation-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.reservation-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.reservation-label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 4px;
+}
+.reservation-label-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  color: #6b7280;
+}
+.reservation-input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  color: #18181b;
+  outline: none;
+  box-sizing: border-box;
+}
+.reservation-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #2563eb22;
+}
+.reservation-notice {
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+.reservation-notice-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 8px;
+}
+.reservation-notice-list {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin: 0;
+  padding-left: 20px;
+}
+.reservation-notice-list li {
+  margin-bottom: 4px;
+}
+.reservation-btn-area {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+.reservation-btn {
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.reservation-btn-back {
+  background: #fff;
+  color: #2563eb;
+}
+.reservation-btn-back:hover {
+  background: #f3f4f6;
+}
+.reservation-btn-confirm {
+  background: #2563eb;
+  color: #fff;
+}
+.reservation-btn-confirm:hover {
+  background: #1d4ed8;
 }
 </style>
   
